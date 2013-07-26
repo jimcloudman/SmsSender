@@ -1,0 +1,7 @@
+﻿"Carrier","Format"
+"AT&T", "{0}@txt.att.net"
+"Cellcom", "{0}@cellcom.quiktxt.com"
+"Sprint", "{0}@messaging.sprintpcs.com"
+"T-Mobile", "{0}@tmomail.net"
+"US Cellular", "{0}@email.uscc.net"
+"Verizon", "{0}@vtext.com"

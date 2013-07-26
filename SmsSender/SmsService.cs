@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Mandrill;
+using CsvDynamic;
+using SmsSender.Properties;
 
 namespace SmsSender
 {
@@ -28,12 +32,7 @@ namespace SmsSender
     {
         private readonly string _fromAddress;
         private readonly MandrillApi _api;
-
-        // TODO: Replace this with something reading from a JSON file, preferably on GitHub
-        private readonly Dictionary<string, string> _templates = new Dictionary<string, string>
-                {
-                    {"CELLCOM", "{0}@cellcom.quiktxt.com"}
-                };
+        private readonly Dictionary<string, string> _templates;
 
         // TODO: Probably should set this up for multiple email methods - SMTP through Gmail as one option
         /// <summary>
@@ -45,6 +44,11 @@ namespace SmsSender
         {
             _fromAddress = fromAddress;
             _api = new MandrillApi(mandrillApiKey);
+
+            // Get carriers
+            var carrierCsv = new MemoryStream(Encoding.UTF8.GetBytes(Resources.Carriers));
+            var carriers = CsvDynamic.CsvDynamic.Convert(carrierCsv);
+            _templates = carriers.ToDictionary(c => ((string) c.Carrier).ToUpperInvariant(), c => (string) c.Format);
         }
 
         public void Send(string message, long phoneNumber, string carrier)
